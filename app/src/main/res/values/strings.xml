@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">EffectiveAcademy</string>
+    <string name="deadpool_name">Deadpool</string>
+    <string name="deadpool_info">Please don\'t make the super suit green or animated!</string>
+    <string name="deadpool_image">https://iili.io/JMnAfIV.png</string>
 </resources>

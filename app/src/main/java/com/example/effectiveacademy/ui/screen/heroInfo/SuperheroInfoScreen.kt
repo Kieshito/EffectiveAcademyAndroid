@@ -1,6 +1,5 @@
 package com.example.effectiveacademy.ui.screen.heroInfo
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -12,17 +11,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import com.example.effectiveacademy.R
 import com.example.effectiveacademy.repository.SuperheroRepositoryProvider
 import com.example.effectiveacademy.ui.navigation.NavigationComponent
-import com.example.effectiveacademy.ui.screen.heroes.SuperheroListViewModel
-import com.example.effectiveacademy.ui.screen.heroes.SuperheroListViewModelFactory
 
 @Composable
 fun SuperheroInfoScreen(
@@ -70,7 +68,10 @@ fun SuperheroInfoScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 42.dp),
+                        .padding(
+                            horizontal = dimensionResource(R.dimen.padding_medium),
+                            vertical = dimensionResource(R.dimen.padding_42)
+                        ),
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.Start
                 ) {

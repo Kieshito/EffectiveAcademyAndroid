@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">EffectiveAcademy</string>
-    <string name="deadpool_name">Deadpool</string>
-    <string name="deadpool_info">Please don\'t make the super suit green or animated!</string>
-    <string name="deadpool_image">https://iili.io/JMnAfIV.png</string>
+    <string name="choose_hero_text">Choose your hero</string>
+    <string name="empty_list">Empty hero list</string>
+    <string name="error">Error occurred</string>
+    <string name="marvel_logo">Marvel logo</string>
+    <string name="back_button">back_button</string>
 </resources>

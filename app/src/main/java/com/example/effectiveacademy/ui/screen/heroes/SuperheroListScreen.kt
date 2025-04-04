@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +26,7 @@ import androidx.media3.common.util.UnstableApi
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
+import com.example.effectiveacademy.R
 import com.example.effectiveacademy.model.Superhero
 import com.example.effectiveacademy.repository.SuperheroRepositoryProvider
 import com.example.effectiveacademy.ui.navigation.NavigationComponent
@@ -39,6 +42,9 @@ fun SuperheroListScreen(
     )
 ) {
     val state = viewModel.state.collectAsState().value
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
 
     Column(
         modifier = Modifier
@@ -46,36 +52,37 @@ fun SuperheroListScreen(
             .background(Color(0xFF2A2A2A))
     ) {
         if (state.error?.isNotEmpty() == true){
-            Text("Error occurred")
+            Text(stringResource(R.string.error))
         } else {
-            Spacer(modifier = Modifier.height(45.dp))
-            Logo()
-            Spacer(modifier = Modifier.height(15.dp))
-            Title()
-            Spacer(modifier = Modifier.height(45.dp))
+            Spacer(modifier = Modifier.height(screenHeight * 0.05f))
+            Logo(screenWidth)
+            Spacer(modifier = Modifier.height(screenHeight * 0.02f))
+            Title(screenWidth)
+            Spacer(modifier = Modifier.height(screenHeight * 0.05f))
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 45.dp)
+                    .padding(bottom = screenHeight * 0.05f)
             ) {
                 if (state.superheroes?.isNotEmpty() == true) {
                     HeroList(
                         heroes = state.superheroes,
-                        onEvent = viewModel::onEvent
+                        onEvent = viewModel::onEvent,
+                        screenWidth = screenWidth,
+                        screenHeight = screenHeight
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(screenHeight * 0.02f))
                 } else {
-                    Text("Empty hero list")
+                    Text(stringResource(R.string.empty_list))
                 }
             }
         }
     }
-
 }
 
 @OptIn(UnstableApi::class)
 @Composable
-fun Logo() {
+fun Logo(screenWidth: androidx.compose.ui.unit.Dp) {
     val painter = rememberAsyncImagePainter(
         model = "https://iili.io/JMnuvbp.png",
         onError = {}
@@ -84,7 +91,7 @@ fun Logo() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp),
+            .height(screenWidth * 0.12f),
         contentAlignment = Alignment.Center
     ) {
         when (state) {
@@ -95,10 +102,10 @@ fun Logo() {
             is AsyncImagePainter.State.Success -> {
                 Image(
                     painter = painter,
-                    contentDescription = "Marvel Logo",
+                    contentDescription = stringResource(R.string.marvel_logo),
                     modifier = Modifier
-                        .width(180.dp)
-                        .height(50.dp)
+                        .width(screenWidth * 0.45f)
+                        .height(screenWidth * 0.12f)
                 )
             }
             is AsyncImagePainter.State.Error -> {}
@@ -107,19 +114,19 @@ fun Logo() {
 }
 
 @Composable
-fun Title() {
+fun Title(screenWidth: androidx.compose.ui.unit.Dp) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp),
+            .height(screenWidth * 0.1f),
         contentAlignment = Alignment.BottomCenter
     ) {
         Text(
-            text = "Choose your hero",
+            text = stringResource(R.string.choose_hero_text),
             color = Color.White,
             modifier = Modifier,
-            fontSize = (30.sp),
-            fontWeight = (FontWeight.W800)
+            fontSize = (screenWidth * 0.075f).value.sp,
+            fontWeight = FontWeight.W800
         )
     }
 }
@@ -127,7 +134,9 @@ fun Title() {
 @Composable
 fun HeroList(
     heroes: List<Superhero>?,
-    onEvent: (SuperheroListEvent) -> Unit
+    onEvent: (SuperheroListEvent) -> Unit,
+    screenWidth: androidx.compose.ui.unit.Dp,
+    screenHeight: androidx.compose.ui.unit.Dp
 ) {
     val listState = rememberLazyListState()
     val snapBehavior = rememberSnapFlingBehavior(listState)
@@ -135,14 +144,16 @@ fun HeroList(
     LazyRow(
         state = listState,
         flingBehavior = snapBehavior,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(screenWidth * 0.04f),
+        contentPadding = PaddingValues(horizontal = screenWidth * 0.04f),
         modifier = Modifier.fillMaxWidth()
     ) {
         items(heroes ?: emptyList()) { hero ->
             HeroCard(
                 hero = hero,
-                onEvent = onEvent
+                onEvent = onEvent,
+                screenWidth = screenWidth,
+                screenHeight = screenHeight
             )
         }
     }
@@ -151,11 +162,16 @@ fun HeroList(
 @Composable
 fun HeroCard(
     hero: Superhero,
-    onEvent: (SuperheroListEvent) -> Unit
+    onEvent: (SuperheroListEvent) -> Unit,
+    screenWidth: androidx.compose.ui.unit.Dp,
+    screenHeight: androidx.compose.ui.unit.Dp
 ) {
     Card(
         modifier = Modifier
-            .size(width = 350.dp, height = 650.dp)
+            .size(
+                width = screenWidth * 0.85f,
+                height = screenHeight * 0.75f
+            )
             .clickable {
                 onEvent(SuperheroListEvent.OnSuperheroCardClick(hero.heroId))
             },
@@ -163,8 +179,7 @@ fun HeroCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             AsyncImage(
                 model = hero.image,
@@ -182,12 +197,12 @@ fun HeroCard(
             Text(
                 text = hero.name,
                 color = Color.White,
-                fontSize = 28.sp,
+                fontSize = (screenWidth * 0.07f).value.sp,
                 fontWeight = FontWeight.W800,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(bottom = 30.dp)
-                    .padding(horizontal = 20.dp),
+                    .padding(bottom = screenHeight * 0.04f)
+                    .padding(horizontal = screenWidth * 0.05f),
             )
         }
     }

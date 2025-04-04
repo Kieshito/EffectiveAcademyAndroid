@@ -11,7 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -26,7 +27,6 @@ import com.example.effectiveacademy.ui.navigation.NavigationComponent
 fun SuperheroInfoScreen(
     heroId: Int,
     navigationComponent: NavigationComponent,
-
     viewModel: SuperheroInfoViewModel = viewModel(
         factory = SuperheroInfoViewModelFactory(
             SuperheroRepositoryProvider().provideRepository(),
@@ -36,6 +36,9 @@ fun SuperheroInfoScreen(
     )
 ) {
     val state by viewModel.state.collectAsState()
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -60,31 +63,30 @@ fun SuperheroInfoScreen(
                 AsyncImage(
                     model = hero.image,
                     contentDescription = hero.name,
-                    contentScale = ContentScale.FillHeight,
-                    modifier = Modifier
-                        .fillMaxSize()
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxSize()
                 )
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(
-                            horizontal = dimensionResource(R.dimen.padding_medium),
-                            vertical = dimensionResource(R.dimen.padding_42)
+                            horizontal = screenWidth * 0.05f,
+                            vertical = screenHeight * 0.05f
                         ),
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
                         text = hero.name,
-                        fontSize = 40.sp,
+                        fontSize = (screenWidth * 0.1f).value.sp,
                         color = Color.White,
                         fontWeight = FontWeight.W800
                     )
-                    Spacer(modifier = Modifier.size(15.dp))
+                    Spacer(modifier = Modifier.height(screenHeight * 0.02f))
                     Text(
                         text = hero.description,
-                        fontSize = 25.sp,
+                        fontSize = (screenWidth * 0.06f).value.sp,
                         color = Color.White,
                         textAlign = TextAlign.Start,
                         fontWeight = FontWeight.W700
@@ -92,13 +94,16 @@ fun SuperheroInfoScreen(
                 }
                 IconButton(
                     onClick = { viewModel.onEvent(SuperheroInfoEvent.OnBackClick) },
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 45.dp)
+                    modifier = Modifier.padding(
+                        horizontal = screenWidth * 0.04f,
+                        vertical = screenHeight * 0.06f
+                    )
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
-
+                        contentDescription = stringResource(R.string.back_button),
+                        tint = Color.White,
+                        modifier = Modifier.size(screenWidth * 0.08f)
                     )
                 }
             }

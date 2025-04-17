@@ -28,15 +28,16 @@ import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.effectiveacademy.R
 import com.example.effectiveacademy.model.Superhero
-import com.example.effectiveacademy.repository.SuperheroRepositoryProvider
+import com.example.effectiveacademy.repository.MarvelSuperheroRepositoryProvider
 import com.example.effectiveacademy.ui.navigation.NavigationComponent
+
 
 @Composable
 fun SuperheroListScreen(
     navigationComponent: NavigationComponent,
     viewModel: SuperheroListViewModel = viewModel(
         factory = SuperheroListViewModelFactory(
-            SuperheroRepositoryProvider().provideRepository(),
+            MarvelSuperheroRepositoryProvider.provideRepository(),
             navigationComponent
         )
     )
@@ -72,7 +73,10 @@ fun SuperheroListScreen(
                         screenHeight = screenHeight
                     )
                     Spacer(modifier = Modifier.height(screenHeight * 0.02f))
-                } else {
+                } else if (state.isLoading) {
+                    CenterCircleLoading()
+                }
+                else {
                     Text(stringResource(R.string.empty_list))
                 }
             }
@@ -205,5 +209,16 @@ fun HeroCard(
                     .padding(horizontal = screenWidth * 0.05f),
             )
         }
+    }
+}
+
+@Composable
+fun CenterCircleLoading(){
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center)
+        )
     }
 }

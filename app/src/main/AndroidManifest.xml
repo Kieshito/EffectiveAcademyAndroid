@@ -5,7 +5,15 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!--Без первой строчки не работает приложение корректно,
+    т.к. в ответе api приходит ссылка на изображение с протоколом http, а с андроид 9 (???хз)
+    разрешается только https трафик по умолчанию. Можно, конечно, так же использовать и stringBuilder,
+    добавляя букву 's' в нужное место-->
+
+
     <application
+        android:usesCleartextTraffic="true"
+
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"

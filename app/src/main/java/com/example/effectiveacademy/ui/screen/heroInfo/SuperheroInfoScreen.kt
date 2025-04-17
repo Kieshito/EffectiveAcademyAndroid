@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.effectiveacademy.R
-import com.example.effectiveacademy.repository.SuperheroRepositoryProvider
+import com.example.effectiveacademy.repository.MarvelSuperheroRepositoryProvider
 import com.example.effectiveacademy.ui.navigation.NavigationComponent
 
 @Composable
@@ -29,7 +29,7 @@ fun SuperheroInfoScreen(
     navigationComponent: NavigationComponent,
     viewModel: SuperheroInfoViewModel = viewModel(
         factory = SuperheroInfoViewModelFactory(
-            SuperheroRepositoryProvider().provideRepository(),
+            MarvelSuperheroRepositoryProvider.provideRepository(),
             navigationComponent,
             heroId
         )

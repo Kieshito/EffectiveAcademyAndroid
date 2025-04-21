@@ -30,6 +30,7 @@ import com.example.effectiveacademy.R
 import com.example.effectiveacademy.model.Superhero
 import com.example.effectiveacademy.repository.MarvelSuperheroRepositoryProvider
 import com.example.effectiveacademy.ui.navigation.NavigationComponent
+import com.example.effectiveacademy.ui.screen.CenterCircleLoading
 
 
 @Composable
@@ -54,6 +55,8 @@ fun SuperheroListScreen(
     ) {
         if (state.error?.isNotEmpty() == true){
             Text(stringResource(R.string.error))
+        } else if (state.isLoading){
+           CenterCircleLoading()
         } else {
             Spacer(modifier = Modifier.height(screenHeight * 0.05f))
             Logo(screenWidth)
@@ -73,16 +76,15 @@ fun SuperheroListScreen(
                         screenHeight = screenHeight
                     )
                     Spacer(modifier = Modifier.height(screenHeight * 0.02f))
-                } else if (state.isLoading) {
-                    CenterCircleLoading()
-                }
-                else {
+                } else {
                     Text(stringResource(R.string.empty_list))
                 }
             }
         }
     }
 }
+
+
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -209,16 +211,5 @@ fun HeroCard(
                     .padding(horizontal = screenWidth * 0.05f),
             )
         }
-    }
-}
-
-@Composable
-fun CenterCircleLoading(){
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.align(Alignment.Center)
-        )
     }
 }

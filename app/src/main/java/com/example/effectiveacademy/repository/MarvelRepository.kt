@@ -18,7 +18,6 @@ class MarvelRepository {
                 hash = hash,
                 limit = 3
             )
-            print("a")
             print(response.data.results.toString())
             Result.success(response.data.results)
         } catch (e: Exception){
@@ -36,7 +35,6 @@ class MarvelRepository {
                 timestamp = timestamp,
                 hash = hash
             )
-            print("b")
             print(response.data.results.toString())
             Result.success(response.data.results.first())
         } catch (e: Exception) {

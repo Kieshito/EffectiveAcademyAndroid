@@ -22,6 +22,7 @@ import coil3.compose.AsyncImage
 import com.example.effectiveacademy.R
 import com.example.effectiveacademy.repository.MarvelSuperheroRepositoryProvider
 import com.example.effectiveacademy.ui.navigation.NavigationComponent
+import com.example.effectiveacademy.ui.screen.CenterCircleLoading
 
 @Composable
 fun SuperheroInfoScreen(
@@ -44,11 +45,7 @@ fun SuperheroInfoScreen(
         modifier = Modifier.fillMaxSize()
     ){
         when {
-            state.isLoading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
+            state.isLoading -> CenterCircleLoading()
 
             state.error != null -> {
                 Text(

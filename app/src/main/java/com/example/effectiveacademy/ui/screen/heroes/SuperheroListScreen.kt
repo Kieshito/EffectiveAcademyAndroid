@@ -54,7 +54,17 @@ fun SuperheroListScreen(
             .background(Color(0xFF2A2A2A))
     ) {
         if (state.error?.isNotEmpty() == true){
-            Text(stringResource(R.string.error))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = state.error,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         } else if (state.isLoading){
            CenterCircleLoading()
         } else {
@@ -77,7 +87,7 @@ fun SuperheroListScreen(
                     )
                     Spacer(modifier = Modifier.height(screenHeight * 0.02f))
                 } else {
-                    Text(stringResource(R.string.empty_list))
+                    //Text(stringResource(R.string.empty_list))
                 }
             }
         }

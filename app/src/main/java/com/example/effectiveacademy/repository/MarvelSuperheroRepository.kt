@@ -7,15 +7,15 @@ class MarvelSuperheroRepository: ISuperheroRepository {
 
     override suspend fun getSuperHeroes(): List<Superhero> {
         return marvelRepository.getCharacters()
-            .getOrNull()
-            ?.map { MarvelMapper.toSuperHero(it) }
+            .getOrThrow()
+            .map { MarvelMapper.toSuperHero(it)}
             ?: emptyList()
     }
 
     override suspend fun findSuperHerobyId(id: Int): Superhero {
         return marvelRepository.getCharacter(id)
-            .getOrNull()
-            ?.let { MarvelMapper.toSuperHero(it) }
+            .getOrThrow()
+            .let { MarvelMapper.toSuperHero(it) }
             ?: throw Exception("Hero not found")
     }
 

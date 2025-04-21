@@ -33,7 +33,7 @@ class SuperheroListViewModel(
             } catch (e: Exception) {
                 _state.update { it.copy(error = e.message) }
             } finally {
-                _state.update { it.copy(isLoading = false, error = null) }
+                _state.update { it.copy(isLoading = false) }
             }
         }
     }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -48,6 +49,22 @@ fun SuperheroListScreen(
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+        }.collect { lastVisibleItemIndex ->
+            if (lastVisibleItemIndex != null) {
+                val totalItems = listState.layoutInfo.totalItemsCount
+                if (lastVisibleItemIndex >= totalItems - 1 && !state.isLoadingMore) {
+                    viewModel.onEvent(SuperheroListEvent.LoadMore)
+                }
+            }
+        }
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -83,8 +100,12 @@ fun SuperheroListScreen(
                         heroes = state.superheroes,
                         onEvent = viewModel::onEvent,
                         screenWidth = screenWidth,
-                        screenHeight = screenHeight
+                        screenHeight = screenHeight,
+                        listState = listState
                     )
+                    if (state.isLoadingMore) {
+                        CenterCircleLoading()
+                    }
                     Spacer(modifier = Modifier.height(screenHeight * 0.02f))
                 } else {
                     //Text(stringResource(R.string.empty_list))
@@ -152,9 +173,9 @@ fun HeroList(
     heroes: List<Superhero>?,
     onEvent: (SuperheroListEvent) -> Unit,
     screenWidth: androidx.compose.ui.unit.Dp,
-    screenHeight: androidx.compose.ui.unit.Dp
+    screenHeight: androidx.compose.ui.unit.Dp,
+    listState: LazyListState
 ) {
-    val listState = rememberLazyListState()
     val snapBehavior = rememberSnapFlingBehavior(listState)
 
     LazyRow(
@@ -162,7 +183,9 @@ fun HeroList(
         flingBehavior = snapBehavior,
         horizontalArrangement = Arrangement.spacedBy(screenWidth * 0.04f),
         contentPadding = PaddingValues(horizontal = screenWidth * 0.04f),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(screenHeight * 0.6f)
     ) {
         items(heroes ?: emptyList()) { hero ->
             HeroCard(

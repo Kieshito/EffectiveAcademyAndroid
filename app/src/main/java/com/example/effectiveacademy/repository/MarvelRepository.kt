@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 class MarvelRepository {
     private val api = NetworkModule.marvelApi
 
-    suspend fun getCharacters(): Result<List<MarvelCharacter>> = withContext(Dispatchers.IO){
+    suspend fun getCharacters(offset: Int): Result<List<MarvelCharacter>> = withContext(Dispatchers.IO){
         try{
             val timestamp = System.currentTimeMillis().toString()
             val hash = NetworkModule.generateHash(timestamp)
@@ -16,7 +16,8 @@ class MarvelRepository {
                 apiKey = NetworkModule.getApiKey(),
                 timestamp = timestamp,
                 hash = hash,
-                limit = 3
+                limit = 5,
+                offset = offset
             )
             Result.success(response.data.results)
         } catch (e: Exception){

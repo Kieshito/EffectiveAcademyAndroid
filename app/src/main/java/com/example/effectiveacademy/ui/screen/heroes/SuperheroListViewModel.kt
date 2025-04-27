@@ -16,8 +16,16 @@ class SuperheroListViewModel(
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
-        SuperheroListState(false, null, null)
+        SuperheroListState(
+            isLoading = false,
+            isLoadingMore = false,
+            superheroes = null,
+            error = null
+        )
     )
+
+private var currentOffset = 0
+
     val state: StateFlow<SuperheroListState> = _state.asStateFlow()
 
     init {
@@ -38,9 +46,29 @@ class SuperheroListViewModel(
         }
     }
 
+    private fun getIncreasedHeroList(){
+        if (_state.value.isLoadingMore) return
+
+        viewModelScope.launch {
+            _state.update { it.copy(isLoadingMore = true) }
+            try {
+                currentOffset += 5
+                val newSuperheroes = repository.getSuperHeroes(offset = currentOffset)
+                val currentList = _state.value.superheroes?.toMutableList() ?: mutableListOf()
+                currentList.addAll(newSuperheroes)
+                _state.update { it.copy(superheroes = currentList) }
+            } catch (e: Exception) {
+                _state.update { it.copy(error = e.message) }
+            } finally {
+                _state.update { it.copy(isLoadingMore = false) }
+            }
+        }
+    }
+
     fun onEvent(event: SuperheroListEvent) {
         when (event) {
             is SuperheroListEvent.GetSuperheroes -> getSuperheroList()
+            is SuperheroListEvent.LoadMore -> getIncreasedHeroList()
             is SuperheroListEvent.OnSuperheroCardClick -> {
                 navigationComponent.navigateToHeroInfo(event.id)
             }

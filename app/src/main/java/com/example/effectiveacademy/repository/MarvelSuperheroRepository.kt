@@ -5,8 +5,8 @@ import com.example.effectiveacademy.model.Superhero
 class MarvelSuperheroRepository: ISuperheroRepository {
     private val marvelRepository = MarvelRepository()
 
-    override suspend fun getSuperHeroes(): List<Superhero> {
-        return marvelRepository.getCharacters()
+    override suspend fun getSuperHeroes(offset: Int): List<Superhero> {
+        return marvelRepository.getCharacters(offset)
             .getOrThrow()
             .map { MarvelMapper.toSuperHero(it)}
             ?: emptyList()

@@ -11,7 +11,8 @@ interface MarvelApi {
         @Query("apikey") apiKey: String,
         @Query("ts") timestamp: String,
         @Query("hash") hash: String,
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int
     ): MarvelResponse
 
     @GET("v1/public/characters/{characterId}")

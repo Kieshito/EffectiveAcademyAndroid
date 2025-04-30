@@ -1,6 +1,7 @@
 package com.example.effectiveacademy.ui.screen.heroes
 
 import androidx.annotation.OptIn
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -28,10 +30,14 @@ import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.effectiveacademy.R
+import com.example.effectiveacademy.extractDominantColor
+import com.example.effectiveacademy.loadBitmapFromUrl
 import com.example.effectiveacademy.model.Superhero
 import com.example.effectiveacademy.repository.MarvelSuperheroRepositoryProvider
 import com.example.effectiveacademy.ui.navigation.NavigationComponent
 import com.example.effectiveacademy.ui.screen.CenterCircleLoading
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -64,12 +70,31 @@ fun SuperheroListScreen(
         }
     }
 
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF2A2A2A))
     ) {
+        val currentHero = state.superheroes?.getOrNull(listState.firstVisibleItemIndex)
+        HeroTriangleIndicator(
+            currentHero = currentHero,
+            screenWidth = screenWidth,
+            screenHeight = screenHeight
+        )
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF2A2A2A))
+    ) {
+        val currentHero = state.superheroes?.getOrNull(listState.firstVisibleItemIndex)
+        HeroTriangleIndicator(
+            currentHero = currentHero,
+            screenWidth = screenWidth,
+            screenHeight = screenHeight
+        )
+
         if (state.error?.isNotEmpty() == true){
             Box(
                 modifier = Modifier
@@ -85,36 +110,37 @@ fun SuperheroListScreen(
         } else if (state.isLoading){
            CenterCircleLoading()
         } else {
-            Spacer(modifier = Modifier.height(screenHeight * 0.05f))
-            Logo(screenWidth)
-            Spacer(modifier = Modifier.height(screenHeight * 0.02f))
-            Title(screenWidth)
-            Spacer(modifier = Modifier.height(screenHeight * 0.05f))
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = screenHeight * 0.05f)
+                modifier = Modifier.fillMaxSize()
             ) {
-                if (state.superheroes?.isNotEmpty() == true) {
-                    HeroList(
-                        heroes = state.superheroes,
-                        onEvent = viewModel::onEvent,
-                        screenWidth = screenWidth,
-                        screenHeight = screenHeight,
-                        listState = listState
-                    )
-                    if (state.isLoadingMore) {
-                        CenterCircleLoading()
+                Spacer(modifier = Modifier.height(screenHeight * 0.05f))
+                Logo(screenWidth)
+                Spacer(modifier = Modifier.height(screenHeight * 0.02f))
+                Title(screenWidth)
+                Spacer(modifier = Modifier.height(screenHeight * 0.05f))
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = screenHeight * 0.05f)
+                ) {
+                    if (state.superheroes?.isNotEmpty() == true) {
+                        HeroList(
+                            heroes = state.superheroes,
+                            onEvent = viewModel::onEvent,
+                            screenWidth = screenWidth,
+                            screenHeight = screenHeight,
+                            listState = listState
+                        )
+                        if (state.isLoadingMore) {
+                            CenterCircleLoading()
+                        }
+                        Spacer(modifier = Modifier.height(screenHeight * 0.02f))
                     }
-                    Spacer(modifier = Modifier.height(screenHeight * 0.02f))
-                } else {
-                    //Text(stringResource(R.string.empty_list))
                 }
             }
         }
     }
 }
-
 
 
 @OptIn(UnstableApi::class)
@@ -169,6 +195,60 @@ fun Title(screenWidth: androidx.compose.ui.unit.Dp) {
 }
 
 @Composable
+fun TriangleIndicator(
+    modifier: Modifier = Modifier,
+    color: Color
+) {
+    Canvas(modifier = modifier) {
+        val path = Path().apply {
+            moveTo(size.width, size.height)
+            lineTo(size.width, 0f)
+            lineTo(0f, size.height)
+            close()
+        }
+        drawPath(
+            path = path,
+            color = color
+        )
+    }
+}
+
+@Composable
+fun HeroTriangleIndicator(
+    currentHero: Superhero?,
+    screenWidth: androidx.compose.ui.unit.Dp,
+    screenHeight: androidx.compose.ui.unit.Dp
+) {
+    if (currentHero != null) {
+        val dominantColor = remember { mutableStateOf(Color(0xFF2A2A2A)) }
+
+        LaunchedEffect(currentHero.image) {
+            dominantColor.value = withContext(Dispatchers.IO) {
+                try {
+                    val bitmap = loadBitmapFromUrl(currentHero.image)
+                    extractDominantColor(bitmap)
+                } catch (e: Exception) {
+                    Color(0xFFED1D24)
+                }
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            TriangleIndicator(
+                modifier = Modifier
+                    .size(screenWidth * 0.65f)
+                    .align(Alignment.BottomEnd)
+                    .padding(end = screenWidth * 0.02f, bottom = screenHeight * 0.02f),
+                color = dominantColor.value
+            )
+        }
+    }
+}
+
+@Composable
 fun HeroList(
     heroes: List<Superhero>?,
     onEvent: (SuperheroListEvent) -> Unit,
@@ -181,11 +261,11 @@ fun HeroList(
     LazyRow(
         state = listState,
         flingBehavior = snapBehavior,
-        horizontalArrangement = Arrangement.spacedBy(screenWidth * 0.04f),
-        contentPadding = PaddingValues(horizontal = screenWidth * 0.04f),
+        horizontalArrangement = Arrangement.spacedBy(screenWidth * 0.08f),
+        contentPadding = PaddingValues(horizontal = screenWidth * 0.08f),
         modifier = Modifier
             .fillMaxWidth()
-            .height(screenHeight * 0.6f)
+            .height(screenHeight * 0.65f)
     ) {
         items(heroes ?: emptyList()) { hero ->
             HeroCard(

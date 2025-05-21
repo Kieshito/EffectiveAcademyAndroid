@@ -24,18 +24,19 @@ class SuperheroInfoViewModel(
 
     private fun loadHero() {
         viewModelScope.launch {
-            try {
-                val hero = repositoryProvider.findSuperHerobyId(heroId)
-                _state.value = _state.value.copy(
-                    isLoading = false,
-                    hero = hero
-                )
-            } catch (e: Exception) {
-                _state.value = _state.value.copy(
-                    isLoading = false,
-                    error = e.message
-                )
-            }
+            repositoryProvider.findSuperHerobyId(heroId)
+                .onSuccess { character ->
+                    _state.value = _state.value.copy(
+                        isLoading = false,
+                        hero = character
+                    )
+                }
+                .onFailure { error ->
+                    _state.value = _state.value.copy(
+                        isLoading = false,
+                        error = error.message
+                    )
+                }
         }
     }
 

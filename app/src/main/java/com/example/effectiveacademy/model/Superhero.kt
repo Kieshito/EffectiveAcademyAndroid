@@ -4,5 +4,5 @@ data class Superhero(
     val heroId: Int,
     val name: String,
     val description: String,
-    var image: String
+    val image: String
 )

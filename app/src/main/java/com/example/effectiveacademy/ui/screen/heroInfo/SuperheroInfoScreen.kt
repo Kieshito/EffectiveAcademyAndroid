@@ -60,7 +60,7 @@ fun SuperheroInfoScreen(
                 AsyncImage(
                     model = hero.image,
                     contentDescription = hero.name,
-                    contentScale = ContentScale.FillBounds,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
 

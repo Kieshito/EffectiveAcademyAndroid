@@ -8,8 +8,8 @@ import java.security.MessageDigest
 
 object NetworkModule {
     private const val BASE_URL = "https://gateway.marvel.com/"
-    private const val PUBLIC_KEY: String = ""
-    private const val PRIVATE_KEY: String = ""
+    private const val PUBLIC_KEY: String = "1cb26014ffc866eed9b84770d32f5ff5"
+    private const val PRIVATE_KEY: String = "06cb168af4b4d497a1911b59f2858816247d5bae"
 
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())

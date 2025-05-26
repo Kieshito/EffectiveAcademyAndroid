@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.effectiveacademy.extractDominantColor
 import com.example.effectiveacademy.loadBitmapFromUrl
-import com.example.effectiveacademy.repository.ISuperheroRepository
+import com.example.effectiveacademy.repository.interfaces.ISuperheroRepository
 import com.example.effectiveacademy.ui.navigation.NavigationComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

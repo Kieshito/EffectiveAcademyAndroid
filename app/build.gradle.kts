@@ -2,6 +2,14 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+}
+
+configurations.all {
+    resolutionStrategy {
+        preferProjectModules()
+    }
+    exclude(group = "com.intellij", module = "annotations")
 }
 
 android {
@@ -56,6 +64,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.media3.common.ktx)
     implementation(libs.androidx.palette.ktx)
+    implementation(libs.androidx.room.runtime.android)
+    kapt(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

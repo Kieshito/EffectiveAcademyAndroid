@@ -1,4 +1,4 @@
-package com.example.effectiveacademy.ui.screen.heroes.сomponents
+package com.example.effectiveacademy.ui.screen.heroes.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

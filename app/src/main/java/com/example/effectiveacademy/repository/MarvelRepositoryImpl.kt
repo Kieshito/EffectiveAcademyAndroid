@@ -4,7 +4,6 @@ import com.example.effectiveacademy.model.Superhero
 import com.example.effectiveacademy.repository.interfaces.ILocalRepository
 import com.example.effectiveacademy.repository.interfaces.INetworkRepository
 import com.example.effectiveacademy.repository.interfaces.ISuperheroRepository
-import kotlinx.coroutines.flow.Flow
 
 class MarvelRepositoryImpl(
     private val networkRepository: INetworkRepository,
@@ -33,7 +32,4 @@ class MarvelRepositoryImpl(
         }
     }
 
-    fun getAllSuperheroes(): Flow<List<Superhero>> {
-        return localRepository.getAllSuperheroes()
-    }
 }

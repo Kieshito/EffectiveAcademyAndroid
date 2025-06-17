@@ -16,11 +16,11 @@ suspend fun loadBitmapFromUrl(url: String): Bitmap {
     }
 }
 
-fun extractDominantColor(bitmap: Bitmap): Color {
+fun extractDominantColor(bitmap: Bitmap, isDarkTheme: Boolean = true): Color {
     val palette = Palette.from(bitmap).generate()
 
     return palette.vibrantSwatch?.rgb?.let { Color(it) } //яркий доминирующий
         ?: palette.mutedSwatch?.rgb?.let { Color(it) } // насыщенный домиенирующий
         ?: palette.dominantSwatch?.rgb?.let { Color(it) } //любой доминирующий
-        ?: Color(0xFF2A2A2A) //самый запасной вариант на свете (цвет фона)
+        ?: if (isDarkTheme) Color(0xFF2A2A2A) else Color(0xFFD0D0D0) //запасной вариант в зависимости от темы
 }

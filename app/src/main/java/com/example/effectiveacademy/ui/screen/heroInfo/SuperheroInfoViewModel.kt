@@ -2,7 +2,7 @@ package com.example.effectiveacademy.ui.screen.heroInfo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.effectiveacademy.repository.ISuperheroRepository
+import com.example.effectiveacademy.repository.interfaces.ISuperheroRepository
 import com.example.effectiveacademy.ui.navigation.NavigationComponent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

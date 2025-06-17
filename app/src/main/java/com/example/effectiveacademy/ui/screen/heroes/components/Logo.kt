@@ -1,4 +1,4 @@
-package com.example.effectiveacademy.ui.screen.heroes.сomponents
+package com.example.effectiveacademy.ui.screen.heroes.components
 
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image

@@ -9,15 +9,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.effectiveacademy.repository.MarvelSuperheroRepositoryProvider
 import com.example.effectiveacademy.ui.navigation.NavigationComponent
 import com.example.effectiveacademy.ui.screen.CenterCircleLoading
-import com.example.effectiveacademy.ui.screen.heroes.сomponents.HeroList
-import com.example.effectiveacademy.ui.screen.heroes.сomponents.HeroTriangleIndicator
-import com.example.effectiveacademy.ui.screen.heroes.сomponents.Logo
-import com.example.effectiveacademy.ui.screen.heroes.сomponents.Title
+import com.example.effectiveacademy.ui.screen.heroes.components.HeroList
+import com.example.effectiveacademy.ui.screen.heroes.components.HeroTriangleIndicator
+import com.example.effectiveacademy.ui.screen.heroes.components.Logo
+import com.example.effectiveacademy.ui.screen.heroes.components.Title
 
 
 @Composable
@@ -25,8 +26,8 @@ fun SuperheroListScreen(
     navigationComponent: NavigationComponent,
     viewModel: SuperheroListViewModel = viewModel(
         factory = SuperheroListViewModelFactory(
-            MarvelSuperheroRepositoryProvider.provideRepository(),
-            navigationComponent
+            navigationComponent,
+            MarvelSuperheroRepositoryProvider.provideRepository(LocalContext.current)
         )
     )
 ) {

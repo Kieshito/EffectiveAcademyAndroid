@@ -1,4 +1,4 @@
-package com.example.effectiveacademy.repository
+package com.example.effectiveacademy.repository.interfaces
 
 import com.example.effectiveacademy.model.Superhero
 

@@ -14,12 +14,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,6 +62,8 @@ fun HeroCard(
     onEvent: (SuperheroListEvent) -> Unit,
     modifier: Modifier
 ) {
+    val layoutDirection = LocalLayoutDirection.current
+    
     Card(
         modifier = modifier
             .clickable {
@@ -82,7 +86,13 @@ fun HeroCard(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.25f))
+                    .background(
+                        if (MaterialTheme.colorScheme.background == Color(0xFFD0D0D0)) {
+                            Color.Black.copy(alpha = 0.25f)
+                        } else {
+                            Color.Black.copy(alpha = 0.4f)
+                        }
+                    )
             )
             Text(
                 text = hero.name,
@@ -90,9 +100,13 @@ fun HeroCard(
                 fontSize = 32.sp,
                 fontWeight = FontWeight.W800,
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(bottom = 16.dp)
-                    .padding(horizontal = 20.dp)
+                    .align(if (layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl) 
+                        Alignment.BottomEnd else Alignment.BottomStart)
+                    .padding(
+                        bottom = 16.dp,
+                        start = if (layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl) 0.dp else 20.dp,
+                        end = if (layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl) 20.dp else 0.dp
+                    )
             )
         }
     }

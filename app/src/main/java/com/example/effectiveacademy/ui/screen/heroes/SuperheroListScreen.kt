@@ -7,9 +7,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.effectiveacademy.repository.MarvelSuperheroRepositoryProvider
@@ -19,7 +19,6 @@ import com.example.effectiveacademy.ui.screen.heroes.components.HeroList
 import com.example.effectiveacademy.ui.screen.heroes.components.HeroTriangleIndicator
 import com.example.effectiveacademy.ui.screen.heroes.components.Logo
 import com.example.effectiveacademy.ui.screen.heroes.components.Title
-
 
 @Composable
 fun SuperheroListScreen(
@@ -33,14 +32,12 @@ fun SuperheroListScreen(
 ) {
     val state = viewModel.state.collectAsState().value
     val configuration = LocalConfiguration.current
+    val layoutDirection = LocalLayoutDirection.current
+    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
     val listState = rememberLazyListState()
-
-    //Долго думал какое решение придумать исходя из ревью, но обмыслить как сделать не получилось,
-    //получилось у ИИ. Решение разобрал, но сомневаюсь в эфективности и элегатности, возможно есть
-    //решение гораздо проще
 
     val currentHero = remember(listState) {
         derivedStateOf {
@@ -89,19 +86,19 @@ fun SuperheroListScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF2A2A2A))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         HeroTriangleIndicator(
             modifier = Modifier
-                .size(screenWidth * 0.65f)
-                .align(Alignment.BottomEnd),
+                .size(if (isLandscape) screenHeight * 0.65f else screenWidth * 0.65f)
+                .align(if (layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl) 
+                    Alignment.BottomStart else Alignment.BottomEnd),
             color = state.dominantColor
         )
 
-        if (state.error?.isNotEmpty() == true){
+        if (state.error?.isNotEmpty() == true) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -110,8 +107,8 @@ fun SuperheroListScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
-        } else if (state.isLoading){
-           CenterCircleLoading()
+        } else if (state.isLoading) {
+            CenterCircleLoading()
         } else {
             Column(
                 modifier = Modifier.fillMaxSize()
@@ -120,16 +117,16 @@ fun SuperheroListScreen(
                 Logo(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(screenWidth * 0.12f),
+                        .height(if (isLandscape) screenHeight * 0.12f else screenWidth * 0.12f),
                     modifierImage = Modifier
-                        .width(screenWidth * 0.45f)
-                        .height(screenWidth * 0.12f)
+                        .width(if (isLandscape) screenHeight * 0.45f else screenWidth * 0.45f)
+                        .height(if (isLandscape) screenHeight * 0.12f else screenWidth * 0.12f)
                 )
                 Spacer(modifier = Modifier.height(screenHeight * 0.02f))
                 Title(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(screenWidth * 0.1f)
+                        .height(if (isLandscape) screenHeight * 0.1f else screenWidth * 0.1f)
                 )
                 Spacer(modifier = Modifier.height(screenHeight * 0.01f))
                 Column(
@@ -143,12 +140,12 @@ fun SuperheroListScreen(
                             onEvent = viewModel::onEvent,
                             modifierList = Modifier
                                 .fillMaxWidth()
-                                .height(screenHeight * 0.7f),
+                                .height(if (isLandscape) screenHeight * 0.8f else screenHeight * 0.7f),
                             modifierCard = Modifier
                                 .size(
-                                width = screenWidth * 0.85f,
-                                height = screenHeight * 0.75f
-                            ),
+                                    width = if (isLandscape) screenHeight * 0.85f else screenWidth * 0.85f,
+                                    height = if (isLandscape) screenHeight * 0.85f else screenHeight * 0.75f
+                                ),
                             listState = listState
                         )
                         if (state.isLoadingMore) {

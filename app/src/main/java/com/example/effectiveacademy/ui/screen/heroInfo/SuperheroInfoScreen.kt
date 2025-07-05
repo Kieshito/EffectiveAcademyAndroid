@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,12 +40,14 @@ fun SuperheroInfoScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val configuration = LocalConfiguration.current
+    val layoutDirection = LocalLayoutDirection.current
+    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
     Box(
         modifier = Modifier.fillMaxSize()
-    ){
+    ) {
         when {
             state.isLoading -> CenterCircleLoading()
 
@@ -69,39 +72,47 @@ fun SuperheroInfoScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(
-                            horizontal = screenWidth * 0.05f,
-                            vertical = screenHeight * 0.05f
+                            start = if (isLandscape) screenHeight * 0.05f else screenWidth * 0.05f,
+                            end = if (isLandscape) screenHeight * 0.05f else screenWidth * 0.05f,
+                            top = if (isLandscape) screenHeight * 0.05f else screenHeight * 0.05f,
+                            bottom = if (isLandscape) screenHeight * 0.05f else screenHeight * 0.05f
                         ),
                     verticalArrangement = Arrangement.Bottom,
-                    horizontalAlignment = Alignment.Start
+                    horizontalAlignment = if (layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl) 
+                        Alignment.End else Alignment.Start
                 ) {
                     Text(
                         text = hero.name,
-                        fontSize = (screenWidth * 0.1f).value.sp,
+                        fontSize = if (isLandscape) (screenHeight * 0.1f).value.sp else (screenWidth * 0.1f).value.sp,
                         color = Color.White,
-                        fontWeight = FontWeight.W800
+                        fontWeight = FontWeight.W800,
+                        textAlign = if (layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl) 
+                            TextAlign.End else TextAlign.Start
                     )
                     Spacer(modifier = Modifier.height(screenHeight * 0.02f))
                     Text(
                         text = hero.description,
-                        fontSize = (screenWidth * 0.06f).value.sp,
+                        fontSize = if (isLandscape) (screenHeight * 0.06f).value.sp else (screenWidth * 0.06f).value.sp,
                         color = Color.White,
-                        textAlign = TextAlign.Start,
+                        textAlign = if (layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl) 
+                            TextAlign.End else TextAlign.Start,
                         fontWeight = FontWeight.W700
                     )
                 }
                 IconButton(
                     onClick = { viewModel.onEvent(SuperheroInfoEvent.OnBackClick) },
                     modifier = Modifier.padding(
-                        horizontal = screenWidth * 0.04f,
-                        vertical = screenHeight * 0.06f
+                        start = if (isLandscape) screenHeight * 0.04f else screenWidth * 0.04f,
+                        end = if (isLandscape) screenHeight * 0.04f else screenWidth * 0.04f,
+                        top = if (isLandscape) screenHeight * 0.06f else screenHeight * 0.06f,
+                        bottom = if (isLandscape) screenHeight * 0.06f else screenHeight * 0.06f
                     )
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = stringResource(R.string.back_button),
                         tint = Color.White,
-                        modifier = Modifier.size(screenWidth * 0.08f)
+                        modifier = Modifier.size(if (isLandscape) screenHeight * 0.08f else screenWidth * 0.08f)
                     )
                 }
             }

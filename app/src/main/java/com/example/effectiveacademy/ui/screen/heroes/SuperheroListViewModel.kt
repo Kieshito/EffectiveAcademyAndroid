@@ -7,6 +7,7 @@ import com.example.effectiveacademy.extractDominantColor
 import com.example.effectiveacademy.loadBitmapFromUrl
 import com.example.effectiveacademy.repository.interfaces.ISuperheroRepository
 import com.example.effectiveacademy.ui.navigation.NavigationComponent
+import com.example.effectiveacademy.ui.theme.MarvelDarkBackground
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +28,7 @@ class SuperheroListViewModel(
             isLoadingMore = false,
             superheroes = null,
             error = null,
-            dominantColor = Color(0xFF2A2A2A)
+            dominantColor = MarvelDarkBackground
         )
     )
 
@@ -96,10 +97,10 @@ class SuperheroListViewModel(
                 val bitmap = withContext(Dispatchers.IO) {
                     loadBitmapFromUrl(hero.image)
                 }
-                val color = extractDominantColor(bitmap)
+                val color = extractDominantColor(bitmap, true)
                 _state.update { it.copy(dominantColor = color) }
             } catch (e: Exception) {
-                _state.update { it.copy(dominantColor = Color(0xFFED1D24)) }
+                _state.update { it.copy(dominantColor = MarvelDarkBackground) }
             }
         }
     }

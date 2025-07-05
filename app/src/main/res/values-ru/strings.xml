@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EffectiveAcademy</string>
+    <string name="choose_hero_text">Выберите своего героя</string>
+    <string name="empty_list">Список героев пуст</string>
+    <string name="error">Произошла ошибка</string>
+    <string name="marvel_logo">Логотип Marvel</string>
+    <string name="back_button">Назад</string>
+</resources> 
